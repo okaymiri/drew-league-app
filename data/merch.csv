@@ -1,0 +1,11 @@
+product_id,name,category,price,description,sizes,colors,stock,image_placeholder,is_featured,is_collab
+1,"Drew League Classic Tee",shirts,35.00,"The original Drew League tee. Heavyweight cotton, vintage feel.","S,M,L,XL,2XL","Black,White,Cream",150,merch1.jpg,true,false
+2,"No Excuse Just Produce Hoodie",hoodies,75.00,"Premium fleece hoodie with embroidered Drew League motto.","S,M,L,XL,2XL,3XL","Black,Red",85,merch2.jpg,true,false
+3,"Drew League Snapback",hats,40.00,"Structured snapback with embroidered Drew League logo.","One Size","Black,Gold,Red",200,merch3.jpg,true,false
+4,"53 Years Commemorative Tee",shirts,45.00,"Limited edition 53rd anniversary tee. Numbered print.","S,M,L,XL,2XL","Black,Cream",75,merch4.jpg,true,false
+5,"Drew League Shorts",shorts,55.00,"Game-ready shorts inspired by the court. Moisture-wicking fabric.","S,M,L,XL,2XL","Black,White",120,merch5.jpg,false,false
+6,"Drew League Dad Hat",hats,32.00,"Unstructured dad hat with embroidered logo. Adjustable strap.","One Size","Cream,Black,Olive",180,merch6.jpg,false,false
+7,"Legacy Crewneck Sweatshirt",hoodies,65.00,"Heavyweight crewneck. Classic Drew League branding.","S,M,L,XL,2XL","Black,Grey",95,merch7.jpg,false,false
+8,"Drew x Community Collab Tee",shirts,50.00,"Drew League x South Central Community Foundation collab drop.","S,M,L,XL,2XL","White,Black",60,merch8.jpg,true,true
+9,"Court Culture Long Sleeve",shirts,42.00,"Court-inspired long sleeve. Subtle Drew League branding on chest.","S,M,L,XL,2XL","Black,Navy",110,merch9.jpg,false,false
+10,"Drew League Bucket Hat",hats,38.00,"Classic bucket hat for the real ones.","S/M,L/XL","Black,Cream,Red",90,merch10.jpg,false,false

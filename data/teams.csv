@@ -1,0 +1,11 @@
+team_id,name,logo_placeholder,wins,losses,division,home_court,head_coach,founded
+1,South Central Kings,kings.png,14,4,West,Drew League Court,Marcus Johnson,2010
+2,Watts Warriors,warriors.png,12,6,West,Watts Recreation Center,DeShawn Williams,2008
+3,Compton Ballers,ballers.png,11,7,South,Compton Community Center,Andre Davis,2012
+4,Inglewood Elite,elite.png,13,5,West,Inglewood YMCA,Terrence Brown,2009
+5,Crenshaw Legends,legends.png,10,8,South,Crenshaw High School,Kevin Moore,2011
+6,Leimert Park Hoopers,hoopers.png,9,9,Central,Leimert Park Rec,Darius Thompson,2015
+7,Harbor City Sharks,sharks.png,8,10,South,Harbor City Gym,Raymond Jackson,2013
+8,East LA Renegades,renegades.png,7,11,East,East LA College,Carlos Reyes,2014
+9,Baldwin Hills Ballers,bhballers.png,6,12,West,Kenneth Hahn Park,James Wilson,2016
+10,Hawthorne Hawks,hawks.png,5,13,South,Hawthorne Gym,Malik Porter,2017

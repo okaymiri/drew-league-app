@@ -1,0 +1,10 @@
+ticket_id,game_id,ticket_type,price,description,available,total,perks
+1,6,general,20.00,"General admission seating. First come first served.",200,300,"Entry to game"
+2,6,vip,75.00,"VIP courtside seating with early entry.",25,40,"Courtside seats,Early entry,Complimentary beverage"
+3,6,season_pass_weekly,150.00,"Weekly season pass. All games this week.",50,75,"All week games,Priority seating"
+4,7,general,20.00,"General admission seating.",180,300,"Entry to game"
+5,7,vip,75.00,"VIP courtside seating.",30,40,"Courtside seats,Early entry,Complimentary beverage"
+6,8,general,20.00,"General admission seating.",250,300,"Entry to game"
+7,8,vip,75.00,"VIP courtside seating.",38,40,"Courtside seats,Early entry,Complimentary beverage"
+8,0,season_pass,299.00,"Full 2026 season pass. All games, all weeks.",45,100,"All games,Priority seating,Commemorative lanyard,10% merch discount"
+9,0,courtside_season,799.00,"Full season courtside pass. The ultimate experience.",8,20,"All games,Courtside seats,Merch discount,VIP lounge access,Player meet and greet"

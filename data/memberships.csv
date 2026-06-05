@@ -1,0 +1,5 @@
+tier_id,name,price_monthly,price_annual,color,icon,description,benefits,member_count
+1,Free Fan,0,0,"#FFFFFF","🏀","Access the Drew League from anywhere. Free forever.","Live scores,Game schedule,Public highlights,Team standings,Basic stats",12500
+2,Drew Insider,9.99,89.99,"#C8102E","⭐","Go deeper into the Drew. Exclusive content for real fans.","Everything in Free Fan,Early access to schedules,Exclusive highlight clips,Monthly newsletter,Behind-the-scenes content,Member Discord access,10% merch discount",2100
+3,Courtside Member,24.99,199.99,"#FFD700","👑","The VIP Drew League experience. For the real ones.","Everything in Drew Insider,VIP ticket access (2 games/month),20% merch discount,Premium video content,Player interviews,Courtside newsletter,Priority event access,Commemorative member card",480
+4,Legacy Member,99.99,899.99,"#C8102E","🏆","The highest honor in Drew League fandom. Limited seats.","Everything in Courtside,Unlimited VIP ticket access,Free merch drop (quarterly),Name in Drew League program,Annual gala invitation,Sponsor recognition,Direct line to Drew League leadership,Custom commemorative content,30% merch discount",52

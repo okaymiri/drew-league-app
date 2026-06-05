@@ -1,0 +1,13 @@
+player_id,name,team_id,position,jersey_number,points_per_game,assists_per_game,rebounds_per_game,steals_per_game,field_goal_pct,hometown,status,bio,is_featured
+1,DeShawn Carter,1,SG,23,28.4,5.2,4.1,2.3,0.521,Compton CA,Active,"Two-time Drew League MVP. Known for his explosive first step and clutch shooting.",true
+2,Marcus Webb,2,PG,3,22.1,9.8,3.4,2.8,0.487,Watts CA,Active,"Floor general with elite court vision. Has guided three teams to championships.",false
+3,Tyrone Jackson,3,PF,41,19.6,2.1,11.2,1.4,0.558,Inglewood CA,Active,"Dominant in the paint. College standout who returned to give back to the community.",false
+4,Kevin Simmons,4,SF,12,24.3,4.7,6.8,1.9,0.503,South Central LA,Active,"Versatile wing player. Overseas pro who plays the Drew every summer.",true
+5,Andre Williams,1,C,44,16.2,1.8,13.4,0.9,0.612,Hawthorne CA,Active,"Defensive anchor and rebounding machine. Community mentor off the court.",false
+6,Damien Rhodes,5,SG,5,26.7,3.9,3.2,3.1,0.491,Crenshaw CA,Active,"Crowd favorite known for deep threes and highlight-reel plays.",true
+7,Isaiah Foster,6,PG,10,18.4,11.2,2.9,2.6,0.468,Leimert Park CA,Active,"Pure point guard. Runs the offense like a maestro. Fan favorite.",false
+8,Lorenzo Hayes,2,SG,21,21.8,4.4,4.6,2.2,0.512,Harbor City CA,Active,"Explosive scorer who can take over any game in the fourth quarter.",false
+9,Dontae Collins,7,SF,35,17.9,3.8,7.1,1.7,0.534,Compton CA,Active,"Two-way player. As good on defense as he is on offense.",false
+10,Raheem Stone,4,PF,33,20.5,2.3,9.7,1.2,0.571,Inglewood CA,Active,"Big with soft hands. Underrated passer for his size.",false
+11,Jaylen Cross,8,PG,0,23.6,8.1,3.7,3.4,0.479,East LA CA,Active,"Electric with the ball. His handles draw crowds every game.",true
+12,Treyvon Miles,3,C,50,14.8,1.4,14.9,0.7,0.634,Watts CA,Active,"Defensive presence. Sets the tone with physicality and heart.",false

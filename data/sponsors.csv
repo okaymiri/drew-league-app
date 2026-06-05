@@ -1,0 +1,9 @@
+sponsor_id,name,tier,logo_placeholder,website,description,deal_type,annual_value,category
+1,"Nike Basketball",title,nike.png,https://nike.com,"Official footwear and apparel partner of the Drew League.",title_sponsor,50000,apparel
+2,"State Farm",gold,statefarm.png,https://statefarm.com,"Supporting community through sports and insurance.",presenting_sponsor,25000,insurance
+3,"Gatorade",gold,gatorade.png,https://gatorade.com,"Official hydration partner. Fueling Drew League athletes.",presenting_sponsor,20000,beverage
+4,"LA Clippers",silver,clippers.png,https://clippers.com,"The LA Clippers support grassroots basketball in Los Angeles.",community_partner,15000,sports_team
+5,"Jordan Brand",title,jordan.png,https://jordan.com,"Jordan Brand — where the legends of the Drew go next.",title_sponsor,45000,apparel
+6,"Hennessy",gold,hennessy.png,https://hennessy.com,"Official spirits partner of Drew League events.",presenting_sponsor,22000,beverage
+7,"Meta Quest",silver,meta.png,https://meta.com,"Bringing Drew League content to the metaverse.",tech_partner,12000,technology
+8,"SoFi",silver,sofi.png,https://sofi.com,"Empowering the Drew League community with financial tools.",community_partner,10000,finance
