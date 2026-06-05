@@ -1,320 +1,338 @@
 """
-styles.py — Global CSS injection for Drew League app.
-Dark mode, premium sports-media feel, Drew League brand palette.
+styles.py — Drew League platform CSS.
+Mobile-first sports app aesthetic.
 """
-
-
-DREW_COLORS = {
-    "black": "#0A0A0A",
-    "dark_bg": "#111111",
-    "card_bg": "#1A1A1A",
-    "border": "#2A2A2A",
-    "white": "#FFFFFF",
-    "cream": "#F5F0E8",
-    "red": "#C8102E",
-    "red_dark": "#A00C24",
-    "gold": "#FFD700",
-    "gold_muted": "#C9A84C",
-    "wood": "#B8864E",
-    "text_secondary": "#999999",
-    "text_muted": "#666666",
-    "success": "#22C55E",
-    "upcoming": "#3B82F6",
-}
 
 GLOBAL_CSS = """
 <style>
-/* ─── RESET & BASE ─── */
-* { box-sizing: border-box; }
-
-[data-testid="stAppViewContainer"] {
-    background-color: #0A0A0A;
-    color: #FFFFFF;
-}
-
-[data-testid="stSidebar"] {
-    background-color: #111111 !important;
-    border-right: 1px solid #2A2A2A;
-}
-
-[data-testid="stSidebar"] * {
-    color: #FFFFFF !important;
-}
 
 /* ─── HIDE STREAMLIT CHROME ─── */
 #MainMenu { visibility: hidden; }
-footer { visibility: hidden; }
-header { visibility: hidden; }
+footer    { visibility: hidden; }
+header    { visibility: hidden; }
+
+/* ─── HIDE SIDEBAR ENTIRELY ─── */
+[data-testid="stSidebar"]        { display: none !important; }
+[data-testid="collapsedControl"] { display: none !important; }
+
+/* ─── BASE ─── */
+html, body, [data-testid="stAppViewContainer"] {
+    background: #080400 !important;
+    color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ─── CONSTRAIN TO MOBILE WIDTH ─── */
+.main .block-container {
+    max-width: 520px !important;
+    padding: 0 16px 80px 16px !important;
+    margin: 0 auto !important;
+}
+
+/* ─── APP HEADER ─── */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #080400;
+    border-bottom: 1px solid #2A1800;
+    padding: 14px 0 12px 0;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ─── HORIZONTAL NAV (radio as tab bar) ─── */
+div[data-testid="stRadio"] {
+    background: #080400;
+    border-bottom: 1px solid #2A1800;
+    margin: 0 -16px !important;
+    padding: 0 8px;
+    position: sticky;
+    top: 53px;
+    z-index: 99;
+}
+
+div[data-testid="stRadio"] > div {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 0 !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    flex-wrap: nowrap !important;
+}
+
+div[data-testid="stRadio"] > div::-webkit-scrollbar {
+    display: none;
+}
+
+div[data-testid="stRadio"] > div > label {
+    flex-shrink: 0 !important;
+    padding: 11px 14px !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    color: #444 !important;
+    cursor: pointer;
+    border-bottom: 2px solid transparent !important;
+    white-space: nowrap !important;
+    background: transparent !important;
+    margin: 0 !important;
+    transition: color 0.1s;
+}
+
+div[data-testid="stRadio"] > div > label:has(input:checked) {
+    color: #FFFFFF !important;
+    border-bottom: 2px solid #FFFFFF !important;
+}
+
+div[data-testid="stRadio"] > div > label > div:first-child {
+    display: none !important;
+}
+
+div[data-testid="stRadio"] > div > label > div:last-child p {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+}
+
+/* ─── PAGE CONTENT SPACING ─── */
+.page-content {
+    padding-top: 20px;
+}
 
 /* ─── TYPOGRAPHY ─── */
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Arial Black', 'Impact', sans-serif;
+h1, h2, h3, h4 {
+    font-family: Arial, Helvetica, sans-serif;
     color: #FFFFFF;
     letter-spacing: -0.02em;
 }
 
-p, div, span, label {
-    font-family: 'Arial', sans-serif;
-    color: #FFFFFF;
-}
-
 /* ─── METRICS ─── */
 [data-testid="metric-container"] {
-    background: #1A1A1A;
-    border: 1px solid #2A2A2A;
-    border-radius: 8px;
-    padding: 16px;
+    background: transparent;
+    border: none;
+    border-top: 1px solid #1E1200;
+    border-radius: 0;
+    padding: 14px 0;
 }
 
 [data-testid="metric-container"] label {
-    color: #999999 !important;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    color: #555 !important;
+    font-size: 9px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.15em !important;
+    font-weight: 700 !important;
 }
 
 [data-testid="metric-container"] [data-testid="stMetricValue"] {
-    color: #FFD700 !important;
-    font-size: 28px;
-    font-weight: 900;
+    color: #FFFFFF !important;
+    font-size: 24px !important;
+    font-weight: 900 !important;
 }
 
 /* ─── TABS ─── */
 [data-baseweb="tab-list"] {
-    background: #111111;
-    border-bottom: 1px solid #2A2A2A;
+    background: #000;
+    border-bottom: 1px solid #1E1200;
+    gap: 0;
+    overflow-x: auto;
 }
 
 [data-baseweb="tab"] {
-    color: #999999 !important;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 13px;
-    letter-spacing: 0.05em;
+    color: #444 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    font-size: 10px !important;
+    letter-spacing: 0.1em !important;
+    border-radius: 0 !important;
+    padding: 10px 16px !important;
+    white-space: nowrap;
 }
 
 [aria-selected="true"] {
     color: #FFFFFF !important;
-    border-bottom: 3px solid #C8102E !important;
+    border-bottom: 2px solid #FFFFFF !important;
+    background: transparent !important;
 }
 
 /* ─── BUTTONS ─── */
 .stButton > button {
-    background: #C8102E;
-    color: #FFFFFF;
+    background: #FFFFFF;
+    color: #080400;
     border: none;
-    border-radius: 6px;
+    border-radius: 0;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    transition: all 0.15s ease;
-    padding: 10px 20px;
+    letter-spacing: 0.1em;
+    padding: 12px 20px;
+    width: 100%;
+    transition: background 0.1s;
 }
 
 .stButton > button:hover {
-    background: #A00C24;
-    transform: translateY(-1px);
+    background: #FF5500 !important;
+    color: #FFFFFF !important;
 }
 
 /* ─── INPUTS ─── */
 .stTextInput > div > div > input,
 .stSelectbox > div > div,
 .stTextArea textarea {
-    background: #1A1A1A !important;
-    border: 1px solid #2A2A2A !important;
+    background: #0D0800 !important;
+    border: 1px solid #1E1200 !important;
     color: #FFFFFF !important;
-    border-radius: 6px;
+    border-radius: 0 !important;
+    font-size: 14px !important;
+}
+
+/* ─── SELECTBOX ─── */
+.stSelectbox label, .stTextInput label, .stTextArea label {
+    font-size: 10px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    color: #555 !important;
 }
 
 /* ─── DATAFRAME ─── */
-.stDataFrame {
-    border: 1px solid #2A2A2A;
-    border-radius: 8px;
-    overflow: hidden;
-}
+.stDataFrame { border: 1px solid #1E1200; border-radius: 0; }
 
 /* ─── DIVIDER ─── */
-hr {
-    border: none;
-    border-top: 1px solid #2A2A2A;
-    margin: 24px 0;
-}
+hr { border: none; border-top: 1px solid #1E1200; margin: 20px 0; }
 
-/* ─── CUSTOM COMPONENTS ─── */
+/* ─── CARD ─── */
 .drew-card {
-    background: #1A1A1A;
-    border: 1px solid #2A2A2A;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 16px;
-    transition: border-color 0.15s ease;
+    background: #0D0800;
+    border: 1px solid #1E1200;
+    border-radius: 0;
+    padding: 16px;
+    margin-bottom: 10px;
 }
 
-.drew-card:hover {
-    border-color: #C8102E;
-}
+.drew-card:hover { border-color: #2A1800; }
 
+/* ─── BADGE ─── */
 .drew-badge {
-    background: #C8102E;
-    color: #FFFFFF;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
+    background: transparent;
+    color: #555;
+    border: 1px solid #2A1800;
+    padding: 2px 7px;
+    border-radius: 0;
+    font-size: 9px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     display: inline-block;
 }
 
-.drew-badge-gold {
-    background: #FFD700;
-    color: #0A0A0A;
-}
-
 .drew-badge-live {
-    background: #22C55E;
-    animation: pulse 1.5s infinite;
+    background: #FF5500;
+    color: #FFFFFF;
+    border: none;
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-}
-
+/* ─── SCORE DISPLAY ─── */
 .score-card {
-    background: #1A1A1A;
-    border: 1px solid #2A2A2A;
-    border-radius: 12px;
-    padding: 24px;
+    background: #0D0800;
+    border: 1px solid #1E1200;
+    border-radius: 0;
+    padding: 20px 16px;
     text-align: center;
 }
 
 .score-card .team-name {
-    font-size: 16px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #FFFFFF;
+    letter-spacing: 0.08em;
+    color: #666;
 }
 
 .score-card .score {
-    font-size: 48px;
+    font-size: 44px;
     font-weight: 900;
-    color: #FFD700;
+    color: #FFFFFF;
     line-height: 1;
-    margin: 8px 0;
+    margin: 6px 0;
 }
 
 .score-card .vs,
 .vs {
-    font-size: 20px;
-    color: #666666;
-    font-weight: 700;
-}
-
-.highlight-card {
-    background: #1A1A1A;
-    border: 1px solid #2A2A2A;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 12px;
-}
-
-.highlight-card:hover {
-    border-color: #C8102E;
-    cursor: pointer;
-}
-
-.membership-card {
-    border-radius: 16px;
-    padding: 28px;
-    margin-bottom: 16px;
-    border: 2px solid transparent;
-}
-
-.membership-card.free { border-color: #2A2A2A; background: #1A1A1A; }
-.membership-card.insider { border-color: #C8102E; background: #1A1A1A; }
-.membership-card.courtside { border-color: #FFD700; background: #1A0A00; }
-.membership-card.legacy { border-color: #C9A84C; background: #0D0A00; }
-
-.stat-leader-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #2A2A2A;
-}
-
-.sponsor-chip {
-    background: #1A1A1A;
-    border: 1px solid #2A2A2A;
-    border-radius: 8px;
-    padding: 12px 20px;
-    text-align: center;
-    font-weight: 700;
-    font-size: 14px;
-    color: #FFFFFF;
-    margin: 4px;
-    display: inline-block;
-}
-
-.nav-header {
     font-size: 11px;
+    color: #2A1800;
     font-weight: 700;
-    text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: #666666;
-    margin: 20px 0 8px 0;
-    padding: 0 8px;
+    text-transform: uppercase;
 }
 
+/* ─── HIGHLIGHT CARD ─── */
+.highlight-card {
+    background: #0D0800;
+    border: 1px solid #1E1200;
+    padding: 14px;
+    margin-bottom: 8px;
+}
+
+/* ─── SPONSOR CHIP ─── */
+.sponsor-chip {
+    background: transparent;
+    border: 1px solid #1E1200;
+    padding: 8px 14px;
+    font-weight: 700;
+    font-size: 11px;
+    color: #555;
+    margin: 3px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ─── PAGE HERO ─── */
 .page-hero {
-    background: linear-gradient(135deg, #1A0A0A 0%, #0A0A0A 50%, #0A0005 100%);
-    border: 1px solid #2A2A2A;
-    border-radius: 16px;
-    padding: 40px;
-    margin-bottom: 32px;
-    position: relative;
-    overflow: hidden;
+    background: transparent;
+    border-bottom: 1px solid #1E1200;
+    padding: 36px 0 28px 0;
+    margin-bottom: 28px;
 }
 
-.page-hero::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #C8102E, #FFD700, #C8102E);
+.page-hero::before { display: none; }
+
+/* ─── MEMBERSHIP ─── */
+.membership-card {
+    padding: 20px;
+    margin-bottom: 10px;
+    border: 1px solid #1E1200;
+    background: #0D0800;
+    border-radius: 0;
 }
+
+.membership-card.insider { border-color: #FF5500; }
 </style>
 """
 
 
 def inject_css():
-    """Import and inject global styles into Streamlit."""
     import streamlit as st
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 
 
 def card(content_html, extra_class=""):
-    """Wrap content in a styled drew-card div."""
     return f'<div class="drew-card {extra_class}">{content_html}</div>'
 
 
 def badge(text, variant="default"):
     cls = "drew-badge"
-    if variant == "gold":
-        cls += " drew-badge-gold"
-    elif variant == "live":
+    if variant == "live":
         cls += " drew-badge-live"
     return f'<span class="{cls}">{text}</span>'
 
 
 def section_header(title, subtitle=""):
-    sub = f'<p style="color:#999;font-size:14px;margin:4px 0 0 0;">{subtitle}</p>' if subtitle else ""
-    return f"""
-    <div style="margin-bottom:24px;">
-        <h2 style="font-size:28px;font-weight:900;margin:0;text-transform:uppercase;letter-spacing:-0.01em;">{title}</h2>
-        {sub}
-    </div>
-    """
+    label = f'<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#555;margin-bottom:6px;">{subtitle}</div>' if subtitle else ""
+    return f'<div style="margin:24px 0 16px 0;">{label}<h2 style="font-size:22px;font-weight:900;margin:0;text-transform:uppercase;letter-spacing:-0.01em;color:#FFFFFF;">{title}</h2></div>'

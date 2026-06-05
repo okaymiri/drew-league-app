@@ -1,160 +1,92 @@
 """
-membership.py — Membership tiers, benefits, and upgrade flows.
+membership.py — Membership tiers.
 """
 import streamlit as st
 from utils.data_loader import load_memberships
-from utils.styles import section_header, badge
+from utils.styles import section_header
 
-
-TIER_ICONS = {"Free Fan": "🏀", "Drew Insider": "⭐", "Courtside Member": "👑", "Legacy Member": "🏆"}
-TIER_STYLES = {
-    "Free Fan": {"border": "#2A2A2A", "bg": "#1A1A1A", "label_color": "#FFFFFF"},
-    "Drew Insider": {"border": "#C8102E", "bg": "#1A0000", "label_color": "#C8102E"},
-    "Courtside Member": {"border": "#FFD700", "bg": "#1A0F00", "label_color": "#FFD700"},
-    "Legacy Member": {"border": "#C9A84C", "bg": "#0F0A00", "label_color": "#C9A84C"},
+TIER_BORDER = {
+    "Free Fan":         "#1E1200",
+    "Drew Insider":     "#FF5500",
+    "Courtside Member": "#FFFFFF",
+    "Legacy Member":    "#555555",
 }
 
 
 def render():
     memberships = load_memberships()
 
-    st.markdown(section_header("Membership", "Join the Drew League community at your level"), unsafe_allow_html=True)
+    st.markdown(section_header("Membership", "Join the Drew League"), unsafe_allow_html=True)
 
-    # ─── MEMBER STATS ─────────────────────────────────────────────────────────
-    total_members = memberships["member_count"].sum()
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Total Members", f"{total_members:,}")
-    col2.metric("Free Fans", f"{int(memberships[memberships['name']=='Free Fan']['member_count'].values[0]):,}" if not memberships.empty else "—")
-    col3.metric("Insiders", f"{int(memberships[memberships['name']=='Drew Insider']['member_count'].values[0]):,}" if not memberships.empty else "—")
-    col4.metric("Courtside+", f"{int(memberships[memberships['name'].isin(['Courtside Member','Legacy Member'])]['member_count'].sum()):,}" if not memberships.empty else "—")
+    total = memberships["member_count"].sum()
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Total Members", f"{total:,}")
+    try:
+        c2.metric("Free Fans",  f"{int(memberships[memberships['name']=='Free Fan']['member_count'].values[0]):,}")
+        c3.metric("Insiders",   f"{int(memberships[memberships['name']=='Drew Insider']['member_count'].values[0]):,}")
+        c4.metric("Courtside+", f"{int(memberships[memberships['name'].isin(['Courtside Member','Legacy Member'])]['member_count'].sum()):,}")
+    except Exception:
+        pass
 
     st.markdown("<br>", unsafe_allow_html=True)
-
-    # ─── TIER CARDS ───────────────────────────────────────────────────────────
     st.markdown(section_header("Choose Your Tier"), unsafe_allow_html=True)
 
     for _, tier in memberships.iterrows():
-        style = TIER_STYLES.get(tier["name"], TIER_STYLES["Free Fan"])
-        icon = TIER_ICONS.get(tier["name"], "🏀")
-        benefits_list = [b.strip() for b in str(tier["benefits"]).split(",")]
+        border   = TIER_BORDER.get(tier["name"], "#1E1200")
+        is_free  = tier["price_monthly"] == 0
+        price    = "FREE" if is_free else f"${tier['price_monthly']}/mo"
+        annual   = "" if is_free else f"${tier['price_annual']}/yr"
+        benefits = [b.strip() for b in str(tier["benefits"]).split(",")]
+        count    = f"{int(tier['member_count']):,} members"
 
-        is_free = tier["price_monthly"] == 0
-        price_display = "FREE" if is_free else f"${tier['price_monthly']}/mo"
-        annual_display = "" if is_free else f"or ${tier['price_annual']}/year (save {int((1 - tier['price_annual']/(tier['price_monthly']*12))*100)}%)"
-
-        available = int(tier["member_count"])
-        popular_badge = ""
+        popular = ""
         if tier["name"] == "Drew Insider":
-            popular_badge = f'<span style="background:#C8102E;color:#FFF;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-left:8px;">MOST POPULAR</span>'
+            popular = '<span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#FF5500;border:1px solid #FF5500;padding:2px 7px;margin-left:10px;">Most Popular</span>'
         elif tier["name"] == "Legacy Member":
-            popular_badge = f'<span style="background:#C9A84C;color:#000;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-left:8px;">LIMITED</span>'
+            popular = '<span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#555;border:1px solid #333;padding:2px 7px;margin-left:10px;">Limited</span>'
+
+        benefit_rows = "".join([f'<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #1E1200;"><span style="color:#444;font-size:11px;">+</span><span style="color:#888;font-size:13px;">{b}</span></div>' for b in benefits])
+
+        card_html = f'<div style="background:#0D0800;border:1px solid {border};padding:20px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;"><div><div style="display:flex;align-items:center;margin-bottom:4px;"><span style="font-size:17px;font-weight:900;color:#FFFFFF;text-transform:uppercase;">{tier["name"]}</span>{popular}</div><div style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:0.08em;">{count}</div></div><div style="text-align:right;"><div style="font-size:28px;font-weight:900;color:#FFFFFF;">{price}</div><div style="font-size:10px;color:#444;">{annual}</div></div></div><div>{benefit_rows}</div></div>'
 
         col1, col2 = st.columns([4, 1])
         with col1:
-            benefits_html = "".join([
-                f'<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #2A2A2A;">'
-                f'<span style="color:{style["label_color"]};font-size:14px;">✓</span>'
-                f'<span style="color:#CCC;font-size:13px;">{b}</span></div>'
-                for b in benefits_list
-            ])
-
-            st.markdown(f"""
-            <div style="background:{style['bg']};border:2px solid {style['border']};border-radius:16px;
-                         padding:28px;margin-bottom:12px;">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:20px;">
-                    <div>
-                        <div style="display:flex;align-items:center;margin-bottom:8px;">
-                            <span style="font-size:28px;margin-right:12px;">{icon}</span>
-                            <span style="font-size:22px;font-weight:900;color:{style['label_color']};">{tier['name']}</span>
-                            {popular_badge}
-                        </div>
-                        <div style="font-size:13px;color:#999;">{available:,} current members</div>
-                    </div>
-                    <div style="text-align:right;">
-                        <div style="font-size:36px;font-weight:900;color:{style['label_color']};">{price_display}</div>
-                        <div style="font-size:12px;color:#666;">{annual_display}</div>
-                    </div>
-                </div>
-                <div>{benefits_html}</div>
-            </div>
-            """, unsafe_allow_html=True)
-
+            st.markdown(card_html, unsafe_allow_html=True)
         with col2:
-            st.markdown("<br><br><br>", unsafe_allow_html=True)
-            if is_free:
-                st.button("Join Free", key=f"join_{tier['tier_id']}", use_container_width=True)
-            else:
-                st.button(f"Upgrade →", key=f"join_{tier['tier_id']}", use_container_width=True)
-                if not is_free:
-                    st.caption(f"${tier['price_annual']}/yr")
+            st.markdown("<br><br>", unsafe_allow_html=True)
+            btn_label = "Join Free" if is_free else "Upgrade"
+            st.button(btn_label, key=f"join_{tier['tier_id']}", use_container_width=True)
+            if not is_free:
+                st.caption(f"${tier['price_annual']}/yr")
 
-    # ─── COMPARISON TABLE ─────────────────────────────────────────────────────
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(section_header("Feature Comparison"), unsafe_allow_html=True)
 
     features = [
-        ("Scores & Schedule", True, True, True, True),
-        ("Public Highlights", True, True, True, True),
-        ("Exclusive Highlight Clips", False, True, True, True),
-        ("Behind the Scenes", False, True, True, True),
-        ("Monthly Newsletter", False, True, True, True),
-        ("Member Discord", False, True, True, True),
-        ("Merch Discount", False, "10%", "20%", "30%"),
-        ("VIP Ticket Access", False, False, "2/mo", "Unlimited"),
-        ("Player Interviews", False, False, True, True),
-        ("Priority Event Access", False, False, True, True),
-        ("Quarterly Merch Drop", False, False, False, True),
-        ("Name in Program", False, False, False, True),
-        ("Annual Gala Invite", False, False, False, True),
-        ("Sponsor Recognition", False, False, False, True),
+        ("Scores & Schedule",    True,  True,  True,      True),
+        ("Public Highlights",    True,  True,  True,      True),
+        ("Exclusive Clips",      False, True,  True,      True),
+        ("Behind the Scenes",    False, True,  True,      True),
+        ("Newsletter",           False, True,  True,      True),
+        ("Merch Discount",       False, "10%", "20%",     "30%"),
+        ("VIP Ticket Access",    False, False, "2/mo",    "Unlimited"),
+        ("Player Interviews",    False, False, True,      True),
+        ("Quarterly Merch Drop", False, False, False,     True),
+        ("Gala Invite",          False, False, False,     True),
     ]
 
-    header_html = """
-    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:4px;
-                 margin-bottom:8px;padding:12px 16px;background:#1A1A1A;border-radius:8px;">
-        <div style="font-size:12px;font-weight:700;color:#666;text-transform:uppercase;">Feature</div>
-        <div style="font-size:12px;font-weight:700;color:#FFF;text-transform:uppercase;text-align:center;">Free</div>
-        <div style="font-size:12px;font-weight:700;color:#C8102E;text-transform:uppercase;text-align:center;">Insider</div>
-        <div style="font-size:12px;font-weight:700;color:#FFD700;text-transform:uppercase;text-align:center;">Courtside</div>
-        <div style="font-size:12px;font-weight:700;color:#C9A84C;text-transform:uppercase;text-align:center;">Legacy</div>
-    </div>
-    """
+    header_html = '<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;padding:10px 16px;background:#0D0800;border:1px solid #1E1200;border-bottom:none;"><div style="font-size:9px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:0.1em;">Feature</div><div style="font-size:9px;font-weight:700;color:#FFF;text-transform:uppercase;text-align:center;">Free</div><div style="font-size:9px;font-weight:700;color:#FF5500;text-transform:uppercase;text-align:center;">Insider</div><div style="font-size:9px;font-weight:700;color:#FFF;text-transform:uppercase;text-align:center;">Courtside</div><div style="font-size:9px;font-weight:700;color:#888;text-transform:uppercase;text-align:center;">Legacy</div></div>'
+
     rows_html = ""
     for feature, *vals in features:
         cells = ""
         for v in vals:
             if v is True:
-                cells += '<div style="text-align:center;color:#22C55E;font-size:16px;">✓</div>'
+                cells += '<div style="text-align:center;color:#FFF;font-size:13px;font-weight:700;">+</div>'
             elif v is False:
-                cells += '<div style="text-align:center;color:#333;font-size:16px;">—</div>'
+                cells += '<div style="text-align:center;color:#222;font-size:13px;">·</div>'
             else:
-                cells += f'<div style="text-align:center;font-size:12px;font-weight:700;color:#FFD700;">{v}</div>'
-        rows_html += f"""
-        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:4px;
-                     padding:10px 16px;border-bottom:1px solid #1A1A1A;">
-            <div style="font-size:13px;color:#CCC;">{feature}</div>
-            {cells}
-        </div>
-        """
+                cells += f'<div style="text-align:center;font-size:10px;font-weight:700;color:#888;">{v}</div>'
+        rows_html += f'<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;padding:9px 16px;border:1px solid #1E1200;border-top:none;"><div style="font-size:12px;color:#666;">{feature}</div>{cells}</div>'
 
-    st.markdown(f"""
-    <div style="background:#111;border:1px solid #2A2A2A;border-radius:12px;overflow:hidden;">
-        {header_html}
-        {rows_html}
-    </div>
-    """, unsafe_allow_html=True)
-
-    # ─── FINAL CTA ────────────────────────────────────────────────────────────
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("""
-    <div style="text-align:center;padding:40px;">
-        <div style="font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:12px;">
-            53 Years Strong
-        </div>
-        <h2 style="font-size:36px;font-weight:900;margin:0 0 12px 0;">Be Part of the Legacy</h2>
-        <p style="color:#999;font-size:16px;max-width:500px;margin:0 auto 24px;">
-            Every membership tier supports the Drew League community, youth programs, and
-            the continuation of LA basketball culture.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f'<div style="margin-bottom:32px;">{header_html}{rows_html}</div>', unsafe_allow_html=True)

@@ -1,249 +1,157 @@
 """
-home.py — Drew League Home Dashboard.
-Featured game, trending highlights, news, schedule preview, and sponsor spotlight.
+home.py — Drew League Home. Mobile-first feed.
 """
 import streamlit as st
-import pandas as pd
 from utils.data_loader import (
     load_games, load_teams, load_players, load_highlights,
-    load_sponsors, load_memberships, get_team_name
+    load_sponsors, get_team_name
 )
-from utils.styles import section_header, badge
+from utils.styles import section_header
 
 
 def render():
-    games = load_games()
-    teams = load_teams()
-    players = load_players()
+    games      = load_games()
+    teams      = load_teams()
+    players    = load_players()
     highlights = load_highlights()
-    sponsors = load_sponsors()
-    memberships = load_memberships()
+    sponsors   = load_sponsors()
 
-    # ─── HERO ────────────────────────────────────────────────────────────────
+    # ─── HERO ─────────────────────────────────────────────────────────────────
     st.markdown("""
-    <div class="page-hero">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
-            <div>
-                <div style="font-size:11px;letter-spacing:0.2em;color:#C8102E;text-transform:uppercase;margin-bottom:8px;font-weight:700;">
-                    ● Live Season 2026
-                </div>
-                <h1 style="font-size:48px;font-weight:900;margin:0;line-height:1;text-transform:uppercase;">
-                    DREW LEAGUE
-                </h1>
-                <p style="color:#999;font-size:16px;margin:8px 0 0 0;">
-                    53 Years of Summer Basketball · Los Angeles, California
-                </p>
-                <p style="color:#FFD700;font-size:13px;font-weight:700;margin:6px 0 0 0;letter-spacing:0.1em;text-transform:uppercase;">
-                    No Excuse · Just Produce
-                </p>
-            </div>
-            <div style="text-align:right;">
-                <div style="font-size:13px;color:#666;">Est. 1973</div>
-                <div style="font-size:13px;color:#666;">South Central, LA</div>
-                <div style="font-size:13px;color:#999;margin-top:4px;">Week 3 of 12</div>
-            </div>
+    <div style="margin:0 -16px 24px -16px;padding:48px 24px 36px 24px;background:radial-gradient(ellipse at 60% 0%, #FF6600 0%, #CC3300 55%, #1A0800 100%);">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.5);margin-bottom:14px;">South Central Los Angeles · Est. 1973</div>
+        <h1 style="font-size:60px;font-weight:900;margin:0;line-height:0.88;text-transform:uppercase;letter-spacing:-0.04em;color:#FFFFFF;text-shadow:0 2px 20px rgba(0,0,0,0.5);">NO<br>EXCUSE.<br>JUST<br>PRODUCE.</h1>
+        <div style="margin-top:22px;display:flex;gap:8px;align-items:center;">
+            <div style="background:#FFFFFF;color:#080400;padding:4px 10px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:0.15em;">LIVE</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.12em;">2026 Season · Week 3 of 12</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # ─── CTA BUTTONS ─────────────────────────────────────────────────────────
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.button("▶  Watch Highlights", use_container_width=True)
-    with col2:
-        st.button("🎟️  Buy Tickets", use_container_width=True)
-    with col3:
-        st.button("👕  Shop Merch", use_container_width=True)
-    with col4:
-        st.button("⭐  Join Membership", use_container_width=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
     # ─── FEATURED GAME ────────────────────────────────────────────────────────
-    st.markdown(section_header("Featured Game", "This week's must-watch matchup"), unsafe_allow_html=True)
-
     featured = games[games["is_featured"] == True]
     if not featured.empty:
         g = featured.iloc[0]
-        home_name = get_team_name(teams, g["home_team_id"])
-        away_name = get_team_name(teams, g["away_team_id"])
+        hn = get_team_name(teams, g["home_team_id"])
+        an = get_team_name(teams, g["away_team_id"])
+        hs = int(g["home_score"])
+        as_ = int(g["away_score"])
+        hw  = hs > as_
+        date_str = g['game_date'].strftime('%b %d') if hasattr(g['game_date'], 'strftime') else g['game_date']
 
-        col1, col2, col3 = st.columns([2, 1, 2])
-        with col1:
-            st.markdown(f"""
-            <div class="score-card">
-                <div class="team-name">{home_name}</div>
-                <div class="score">{int(g['home_score'])}</div>
-                <div style="font-size:12px;color:#666;">HOME</div>
+        st.markdown(section_header("Featured Game"), unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="drew-card" style="border-top:2px solid #FFFFFF;padding:20px;">
+            <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:14px;">
+                Final · {date_str} · Week {g['week']}
             </div>
-            """, unsafe_allow_html=True)
-        with col2:
-            status_badge = badge("FINAL", "default") if g["status"] == "completed" else badge("UPCOMING", "live")
-            st.markdown(f"""
-            <div style="text-align:center;padding:40px 0;">
-                <div class="vs">VS</div>
-                <div style="margin-top:16px;">{status_badge}</div>
-                <div style="color:#666;font-size:12px;margin-top:8px;">
-                    {g['game_date'].strftime('%b %d, %Y') if hasattr(g['game_date'], 'strftime') else g['game_date']}
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="flex:1;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;
+                                 letter-spacing:0.08em;color:{'#FFF' if hw else '#555'};">{hn}</div>
+                    <div style="font-size:9px;color:#444;text-transform:uppercase;margin-top:2px;">Home</div>
                 </div>
-                <div style="color:#666;font-size:12px;">Week {g['week']}</div>
-            </div>
-            """, unsafe_allow_html=True)
-        with col3:
-            st.markdown(f"""
-            <div class="score-card">
-                <div class="team-name">{away_name}</div>
-                <div class="score">{int(g['away_score'])}</div>
-                <div style="font-size:12px;color:#666;">AWAY</div>
-            </div>
-            """, unsafe_allow_html=True)
-
-        if g["recap"]:
-            st.markdown(f"""
-            <div class="drew-card" style="margin-top:16px;">
-                <div style="font-size:12px;color:#C8102E;font-weight:700;text-transform:uppercase;
-                             letter-spacing:0.1em;margin-bottom:8px;">Game Recap</div>
-                <p style="color:#ccc;margin:0;line-height:1.6;">{g['recap']}</p>
-            </div>
-            """, unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # ─── TWO COLUMN LAYOUT: HIGHLIGHTS + UPCOMING ─────────────────────────────
-    left, right = st.columns([3, 2])
-
-    with left:
-        st.markdown(section_header("Trending Highlights"), unsafe_allow_html=True)
-        top_highlights = highlights.nlargest(3, "views")
-        for _, h in top_highlights.iterrows():
-            views_fmt = f"{int(h['views']):,}"
-            st.markdown(f"""
-            <div class="highlight-card">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
-                    <div style="flex:1;">
-                        <div style="margin-bottom:6px;">
-                            {badge(h['category'].replace('_', ' ').upper())}
-                        </div>
-                        <div style="font-size:16px;font-weight:700;color:#FFFFFF;margin-bottom:4px;line-height:1.3;">
-                            {h['title']}
-                        </div>
-                        <div style="font-size:12px;color:#666;">
-                            {views_fmt} views · Week {h['week']} · {h['season']}
-                        </div>
-                    </div>
-                    <div style="background:#C8102E;border-radius:8px;padding:12px 16px;
-                                font-size:20px;flex-shrink:0;">
-                        ▶
+                <div style="text-align:center;padding:0 16px;">
+                    <div style="font-size:38px;font-weight:900;letter-spacing:0.05em;line-height:1;">
+                        <span style="color:{'#FFF' if hw else '#555'};">{hs}</span>
+                        <span style="color:#2A1800;margin:0 8px;font-size:24px;">–</span>
+                        <span style="color:{'#FFF' if not hw else '#555'};">{as_}</span>
                     </div>
                 </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-    with right:
-        st.markdown(section_header("Upcoming Games"), unsafe_allow_html=True)
-        upcoming = games[games["status"] == "upcoming"].head(4)
-        for _, g in upcoming.iterrows():
-            home_name = get_team_name(teams, g["home_team_id"])
-            away_name = get_team_name(teams, g["away_team_id"])
-            date_str = g['game_date'].strftime('%b %d') if hasattr(g['game_date'], 'strftime') else g['game_date']
-            st.markdown(f"""
-            <div class="drew-card">
-                <div style="font-size:11px;color:#3B82F6;font-weight:700;text-transform:uppercase;
-                             letter-spacing:0.1em;margin-bottom:8px;">
-                    {date_str} · Week {g['week']}
+                <div style="flex:1;text-align:right;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;
+                                 letter-spacing:0.08em;color:{'#FFF' if not hw else '#555'};">{an}</div>
+                    <div style="font-size:9px;color:#444;text-transform:uppercase;margin-top:2px;">Away</div>
                 </div>
-                <div style="font-size:15px;font-weight:700;color:#FFFFFF;">
-                    {home_name} vs {away_name}
-                </div>
-                <div style="font-size:12px;color:#666;margin-top:4px;">Drew League Court · LA</div>
             </div>
-            """, unsafe_allow_html=True)
+            {f'<div style="margin-top:14px;padding-top:14px;border-top:1px solid #1E1200;font-size:13px;color:#666;line-height:1.6;">{g["recap"]}</div>' if g["recap"] else ""}
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    # ─── UPCOMING GAMES ───────────────────────────────────────────────────────
+    st.markdown(section_header("Upcoming Games"), unsafe_allow_html=True)
+    upcoming = games[games["status"] == "upcoming"].head(3)
+    for _, g in upcoming.iterrows():
+        hn = get_team_name(teams, g["home_team_id"])
+        an = get_team_name(teams, g["away_team_id"])
+        date_str = g['game_date'].strftime('%b %d') if hasattr(g['game_date'], 'strftime') else g['game_date']
+        st.markdown(f"""
+        <div style="display:flex;justify-content:space-between;align-items:center;
+                     padding:14px 0;border-bottom:1px solid #1E1200;">
+            <div>
+                <div style="font-size:9px;color:#555;text-transform:uppercase;
+                             letter-spacing:0.1em;margin-bottom:4px;">{date_str} · Wk {g['week']}</div>
+                <div style="font-size:15px;font-weight:700;color:#FFF;">{hn} vs {an}</div>
+            </div>
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;
+                         letter-spacing:0.1em;color:#FF5500;">Upcoming</div>
+        </div>
+        """, unsafe_allow_html=True)
+    st.button("Full Schedule", use_container_width=True, key="home_sched")
+
+    # ─── HIGHLIGHTS ───────────────────────────────────────────────────────────
+    st.markdown(section_header("Top Plays"), unsafe_allow_html=True)
+    for _, h in highlights.nlargest(3, "views").iterrows():
+        cat = h['category'].replace('_', ' ').upper()
+        st.markdown(f"""
+        <div style="padding:14px 0;border-bottom:1px solid #1E1200;">
+            <div style="font-size:9px;color:#555;text-transform:uppercase;
+                         letter-spacing:0.1em;margin-bottom:5px;">{cat} · Week {h['week']}</div>
+            <div style="font-size:15px;font-weight:700;color:#FFF;line-height:1.3;margin-bottom:3px;">
+                {h['title']}
+            </div>
+            <div style="font-size:10px;color:#444;">{int(h['views']):,} views</div>
+        </div>
+        """, unsafe_allow_html=True)
+    st.button("All Highlights", use_container_width=True, key="home_hl")
 
     # ─── FEATURED PLAYER ──────────────────────────────────────────────────────
-    st.markdown(section_header("Featured Player"), unsafe_allow_html=True)
-    featured_players = players[players["is_featured"] == True]
-    if not featured_players.empty:
-        player = featured_players.iloc[0]
-        team_name = get_team_name(teams, player["team_id"])
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            st.markdown(f"""
-            <div style="background:#1A1A1A;border:1px solid #2A2A2A;border-radius:12px;
-                         padding:32px;text-align:center;">
-                <div style="font-size:64px;">🏀</div>
-                <div style="font-size:32px;font-weight:900;color:#FFD700;">#{player['jersey_number']}</div>
-                <div style="font-size:12px;color:#666;text-transform:uppercase;letter-spacing:0.1em;">
-                    {player['position']}
+    featured_p = players[players["is_featured"] == True]
+    if not featured_p.empty:
+        p = featured_p.iloc[0]
+        tn = get_team_name(teams, p["team_id"])
+        st.markdown(section_header("Player Spotlight"), unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="drew-card" style="border-top:2px solid #FF5500;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <div>
+                    <div style="font-size:20px;font-weight:900;color:#FFF;
+                                 text-transform:uppercase;">{p['name']}</div>
+                    <div style="font-size:9px;color:#555;text-transform:uppercase;
+                                 letter-spacing:0.1em;margin-top:3px;">{tn} · #{p['jersey_number']} · {p['position']}</div>
+                </div>
+                <div style="font-size:40px;font-weight:900;color:#FFF;line-height:1;">
+                    #{p['jersey_number']}
                 </div>
             </div>
-            """, unsafe_allow_html=True)
-        with col2:
-            st.markdown(f"""
-            <div style="padding:8px 0;">
-                <div style="font-size:11px;color:#C8102E;font-weight:700;text-transform:uppercase;
-                             letter-spacing:0.1em;margin-bottom:8px;">Player Spotlight</div>
-                <h2 style="font-size:36px;font-weight:900;margin:0 0 4px 0;">{player['name']}</h2>
-                <div style="font-size:14px;color:#666;margin-bottom:16px;">{team_name}</div>
-                <p style="color:#ccc;line-height:1.6;margin-bottom:16px;">{player['bio']}</p>
-            </div>
-            """, unsafe_allow_html=True)
-            m1, m2, m3, m4 = st.columns(4)
-            with m1:
-                st.metric("PPG", f"{player['points_per_game']}")
-            with m2:
-                st.metric("APG", f"{player['assists_per_game']}")
-            with m3:
-                st.metric("RPG", f"{player['rebounds_per_game']}")
-            with m4:
-                st.metric("FG%", f"{int(player['field_goal_pct']*100)}%")
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # ─── SPONSOR SPOTLIGHT ────────────────────────────────────────────────────
-    st.markdown(section_header("Official Partners", "Powering the Drew League community"), unsafe_allow_html=True)
-    title_sponsors = sponsors[sponsors["tier"] == "title"]
-    gold_sponsors = sponsors[sponsors["tier"] == "gold"]
-
-    sponsor_html = ""
-    for _, s in title_sponsors.iterrows():
-        sponsor_html += f'<span class="sponsor-chip" style="border-color:#FFD700;color:#FFD700;">{s["name"]}</span>'
-    for _, s in gold_sponsors.iterrows():
-        sponsor_html += f'<span class="sponsor-chip">{s["name"]}</span>'
-
-    st.markdown(f"""
-    <div class="drew-card">
-        <div style="font-size:11px;color:#666;font-weight:700;text-transform:uppercase;
-                     letter-spacing:0.1em;margin-bottom:16px;">Season Partners</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">{sponsor_html}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # ─── MEMBERSHIP CTA ───────────────────────────────────────────────────────
-    st.markdown("<br>", unsafe_allow_html=True)
-    total_members = memberships["member_count"].sum() if not memberships.empty else 0
-    st.markdown(f"""
-    <div style="background:linear-gradient(135deg,#1A0000,#0A0A0A);border:1px solid #C8102E;
-                border-radius:16px;padding:40px;text-align:center;">
-        <div style="font-size:11px;color:#C8102E;font-weight:700;text-transform:uppercase;
-                     letter-spacing:0.2em;margin-bottom:12px;">Drew League Membership</div>
-        <h2 style="font-size:36px;font-weight:900;margin:0 0 12px 0;">
-            Join {total_members:,}+ Drew League Members
-        </h2>
-        <p style="color:#999;font-size:16px;margin:0 0 24px 0;max-width:500px;margin-left:auto;margin-right:auto;">
-            Exclusive content, VIP access, merch drops, and more.
-            Be part of the legacy.
-        </p>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-            <div style="background:#C8102E;color:#FFF;padding:14px 32px;border-radius:8px;
-                         font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:0.05em;">
-                Start Free →
-            </div>
-            <div style="border:1px solid #FFD700;color:#FFD700;padding:14px 32px;border-radius:8px;
-                         font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:0.05em;">
-                View Plans
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0;border-top:1px solid #1E1200;">
+                <div style="text-align:center;padding:12px 8px;border-right:1px solid #1E1200;">
+                    <div style="font-size:22px;font-weight:900;color:#FFF;">{p['points_per_game']}</div>
+                    <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.1em;">PPG</div>
+                </div>
+                <div style="text-align:center;padding:12px 8px;border-right:1px solid #1E1200;">
+                    <div style="font-size:22px;font-weight:900;color:#FFF;">{p['assists_per_game']}</div>
+                    <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.1em;">APG</div>
+                </div>
+                <div style="text-align:center;padding:12px 8px;border-right:1px solid #1E1200;">
+                    <div style="font-size:22px;font-weight:900;color:#FFF;">{p['rebounds_per_game']}</div>
+                    <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.1em;">RPG</div>
+                </div>
+                <div style="text-align:center;padding:12px 8px;">
+                    <div style="font-size:22px;font-weight:900;color:#FFF;">{int(p['field_goal_pct']*100)}%</div>
+                    <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.1em;">FG%</div>
+                </div>
             </div>
         </div>
+        """, unsafe_allow_html=True)
+
+    # ─── PARTNERS ─────────────────────────────────────────────────────────────
+    st.markdown(section_header("Partners"), unsafe_allow_html=True)
+    sponsor_html = ""
+    for _, s in sponsors[sponsors["tier"].isin(["title","gold"])].iterrows():
+        sponsor_html += f'<span class="sponsor-chip">{s["name"]}</span>'
+    st.markdown(f"""
+    <div style="padding:12px 0;border-top:1px solid #1E1200;border-bottom:1px solid #1E1200;margin-bottom:24px;">
+        {sponsor_html}
     </div>
     """, unsafe_allow_html=True)
